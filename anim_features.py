@@ -26,7 +26,7 @@ def init():
 def animate(i,kerniter):
     kern = kerniter.next()    
     arr[:] = 127
-
+    kern[kern<0] = 0
     arr[:kern.shape[0],:kern.shape[1]] = kern*255
     imdisp.set_array(arr)
 
