@@ -28,6 +28,7 @@ def rectsum(intimg,rect):
 
 
 def extractfeature(feat,img,frameSize):
+
     # it's not entirely impossible that overflow won't occur here, but we can
     # safely assume that training images will not be large enough to cause
     # overflow
@@ -58,14 +59,14 @@ def extractfeature(feat,img,frameSize):
                             + f[2]*rectsum(intimg,b+boxsize) + f[3]*rectsum(intimg,c+boxsize)
             elif feat.shape[majaxis] == 3:
                 b = list(a)
-                b[majaxis] += boxsize[majaxis]//nsubblocks
+                b[majaxis] += boxsize[majaxis]
                 c = list(a)
-                c[majaxis] += 2*boxsize[majaxis]//nsubblocks
+                c[majaxis] += 2*boxsize[majaxis]
                 diff[y,x] = f[0]*rectsum(intimg,a+boxsize) + f[1]*rectsum(intimg,c+boxsize) \
                             + f[2]*rectsum(intimg,b+boxsize)
             else: # elif f.shape[majaxis] == 2:
                 b = list(a)
-                b[majaxis] += boxsize[majaxis]//nsubblocks
+                b[majaxis] += boxsize[majaxis]
                 diff[y,x] = f[0]*rectsum(intimg,a+boxsize) + f[1]*rectsum(intimg,b+boxsize)
         yield kern,diff
                 

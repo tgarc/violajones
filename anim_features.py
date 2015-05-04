@@ -34,7 +34,7 @@ def animate(i,kerniter):
 
 kerniter = (k for f in feat.features for k in feat.iterkern(f,frameSize))
 anim = animation.FuncAnimation(fig, animate, init_func=init, fargs=(kerniter,)
-                               , interval=argv[1] if len(argv)>1 else 200
+                               , interval=int(argv[1]) if len(argv)>1 else 200
                                , blit=False, repeat=False)
 try:
     plt.show()

@@ -3,10 +3,10 @@ import cv2
 import numpy as np
 import itertools as it
 import features as feat
+import matplotlib as mpl
 import matplotlib.pyplot as plt
-from sys import argv
 import matplotlib.animation as animation
-
+from sys import argv
 
 frameSize = 19
 arr = np.zeros((frameSize,frameSize), dtype=np.uint8)
@@ -28,7 +28,6 @@ def init():
 imgfeatures = iter([])
 def animate(i,features,faces):
     global imgfeatures
-    update = []
 
     try:
         kern,thresh = imgfeatures.next()
@@ -36,7 +35,6 @@ def animate(i,features,faces):
         img = faces.next()
 
         imdisp.set_data(img)
-        update.append(imdisp)
 
         imgfeatures = ((kern,thresh) for f in feat.features for kern,thresh in feat.extractfeature(f,img,frameSize))
         kern,thresh = imgfeatures.next()
@@ -46,20 +44,18 @@ def animate(i,features,faces):
     arr[:kern.shape[0],:kern.shape[1]] = kern*255
     kdisp.set_array(arr)
 
-    normed = cv2.normalize(thresh,thresh,0,255,cv2.NORM_MINMAX,dtype=cv2.CV_8U)*255
+    normed = cv2.normalize(thresh,thresh,0,255,cv2.NORM_MINMAX,cv2.CV_8U)
     padded = np.ones_like(arr)*255
     padded[:normed.shape[0],:normed.shape[1]] = normed
     fdisp.set_data(padded)
     
-    update.extend([kdisp,fdisp])
-
-    return update
+    return kdisp,fdisp,imdisp
 
 
 faces_fh = h5py.File('faces.hdf5','r')
 faces = iter(faces_fh['faces'])
 anim = animation.FuncAnimation(fig, animate, init_func=init, fargs=(imgfeatures,faces)
-                               , interval=argv[1] if len(argv)>1 else 200
+                               , interval=int(argv[1]) if len(argv)>1 else 200
                                , blit=True, repeat=False)
 
 try:
